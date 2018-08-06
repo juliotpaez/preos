@@ -1,0 +1,15 @@
+
+$size: 19px;
+$property: red;
+
+body {
+    color: $property;
+
+    h1 {
+        background-color: $property;
+    }
+}
+
+:scope {
+    height: $size;
+}

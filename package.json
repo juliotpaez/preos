@@ -1,0 +1,34 @@
+{
+	"name": "preos",
+	"version": "1.0.0",
+	"description": "Preos is a js library to transpile and interprete other languages than HTML, CSS and JS in runtime.",
+	"main": "main.js",
+	"scripts": {
+		"test": "node ./test.js"
+	},
+	"author": "Julio treviño Páez <julio.tpaez@gmail.com>",
+	"license": "ISC",
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/juliotpaez/preos.git"
+	},
+	"homepage": "https://github.com/juliotpaez/preos#readme",
+	"keywords": [
+		"pre-processor",
+		"transpiler",
+		"interpreter"
+	],
+	"devDependencies": {},
+	"dependencies": {
+		"@types/node": "^10.5.5",
+		"cssom": "^0.3.4",
+		"fast-xml-parser": "^3.11.2",
+		"less": "^3.8.0",
+		"pug": "^2.0.3",
+		"sass": "^1.10.3",
+		"toml": "^2.3.3",
+		"typescript": "^3.0.1",
+		"vue": "^2.5.17",
+		"vue-template-compiler": "^2.5.17"
+	}
+}

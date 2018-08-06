@@ -1,0 +1,10 @@
+{
+    "key": "value",
+    "number": 12,
+    "objectName": {
+        "list": [
+            "something",
+            "something"
+        ]
+    }
+}
