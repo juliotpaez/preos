@@ -1,25 +1,14 @@
 # Preos - Vue compiler
 
-Preos supports the compile for Vue SFCs templates. A SFC can constain aa `template` tag, an `script` tag and one or more `style` tags. Each of these tags can be in any of the different languages Preos support.
+Preos supports the compile for Vue SFCs templates. A SFC can contain a `template` tag, a `script` tag and one or more `style` tags. Each of these tags can be in any of the different languages that Preos supports.
 
 ## Transpiler
 
-The transpiler works returning a compiled version of the `.vue` file in which the `template`, `script` and `style`s tags are transpiled to `html`, `js` and `css` respectively.
+The transpiler works returning a compiled version of the `.vue` file in which the `template`, `script` and all `style` tags are transpiled to `html`, `js` and `css` respectively.
 
 For example, this code:
 
-```vue
-# Preos - Vue compiler
-
-Preos supports the compile for Vue SFCs templates. A SFC can constain aa `template` tag, an `script` tag and one or more `style` tags. Each of these tags can be in any of the different languages Preos support.
-
-## Transpiler
-
-The transpiler works returning a compiled version of the `.vue` file in which the `template`, `script` and `style`s tags are transpiled to `html`, `js` and `css` respectively.
-
-For example, this code:
-
-```vue
+```html
 <template lang="pug">
 div
     p #{name}'s Pug source code!
@@ -59,10 +48,7 @@ Transpiled with this code:
             url: file,
             outputLang,
             executerOptions: {
-                // For .pug
-                name: "Preos",
-
-                // For .vue
+                // For template lang=pug
                 template: {
                     name: "Preos"
                 }
@@ -84,7 +70,8 @@ Results in a code like this:
         <p>Preos's Pug source code!</p>
     </div>
 </template>
-<script type='application/javascript'>module.exports = {
+<script type='application/javascript'>
+    module.exports = {
         data: function () {
             return {
                 who: 'world'
@@ -93,7 +80,7 @@ Results in a code like this:
     };
 </script>
 <style type='text/css'>
-    [data-vue-id] {
+    :scope {
         color: yellow;
     }
 
@@ -110,7 +97,7 @@ Results in a code like this:
         background-color: red;
     }
 
-    [data-vue-id] div {
+    [data-vue-id] {
         height: 19px;
     }
 </style>
@@ -128,7 +115,7 @@ The Preos Vue interpreter returns a function to execute it lazily in the form:
 function lazyExecute(delegateStyles : Logic = false) : Promise<Object> { ... }
 ```
 
-It returns a promise that will perform an extra step after the execution of the transpiler, executing the `script` code and returning its result with all the information of the SFCs in an object like this:
+It returns a promise that will perform an extra step after the execution of the transpiler, it will execute the `script` code returning its result with all the information of the SFCs in an object like this:
 
 ```js
 resultObject = {
@@ -146,7 +133,7 @@ resultObject = {
 
 Vue allow styles to be scoped so the css rules are only applied inside the template.
 
-Preos extends this functionality allowing to use the pseudo-classes `:root` and `:scope` to select the root element of the template, in fact, Preos replaces those pseudo-classes by the auto-generated attribute that scopes the css.
+Preos extends this functionality allowing to use the pseudo-classes `:root` and `:scope` to select the root element of the template. in fact, Preos replaces those pseudo-classes by the auto-generated attribute that scopes the css.
 
 > The only way to apply styles for the root element is using one of those pseudo-classes.
 
