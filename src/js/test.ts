@@ -11,4 +11,4 @@ class C {
     constructor(a: string, b: boolean) { }
 }
 
-module.exports = new C("Algo", false);
+module.exports = new C("Something", false);

@@ -36,14 +36,14 @@ const preosObject = {
         list: listInterpreters,
         clearCache: clearInterpreterCache
     },
-}
+};
 
 const transpilers = require("./transpilers");
 const transpilersCache = cache.create();
 const interpreters = require("./interpreters");
 const interpretersCache = cache.create();
 const regexLang = /^[\w_]+$/;
-const sourcePrefix = "/source/"
+const sourcePrefix = "/source/";
 
 
 
@@ -71,8 +71,7 @@ async function loadFrom(url) {
             protocol: "http",
             content: await loadFromHttp(url)
         }
-    }
-    else {
+    } else {
         return {
             protocol: "file",
             content: await loadFromFile(url)
@@ -89,8 +88,7 @@ async function loadFromFile(url) {
         fs.readFile(url, function (err, data) {
             if (err) {
                 reject(err);
-            }
-            else {
+            } else {
                 resolve(data.toString());
             }
         });
@@ -99,37 +97,41 @@ async function loadFromFile(url) {
 
 async function loadFromHttp(url) {
     assert(typeof (url) == "string", "The url parameter is not a string.");
-    //assert(url.startsWith("http://") || url.startsWith("https://"), "The url parameter is not an http/https request. Current: " + url);
 
     return new Promise(function (resolve, reject) {
         if (url.startsWith("http://")) {
             http.get(url, function (res) {
-                const { statusCode } = res;
+                const {
+                    statusCode
+                } = res;
                 if (statusCode !== 200) {
                     res.resume();
                     reject('Request Failed.\n' + `Status Code: ${statusCode}`);
-                }
-                else {
+                } else {
                     res.setEncoding('utf8');
                     let rawData = '';
-                    res.on('data', (chunk) => { rawData += chunk; });
+                    res.on('data', (chunk) => {
+                        rawData += chunk;
+                    });
                     res.on('end', () => {
                         resolve(rawData.toString());
                     });
                 }
             });
-        }
-        else {
+        } else {
             https.get(url, function (res) {
-                const { statusCode } = res;
+                const {
+                    statusCode
+                } = res;
                 if (statusCode !== 200) {
                     res.resume();
                     reject('Request Failed.\n' + `Status Code: ${statusCode}`);
-                }
-                else {
+                } else {
                     res.setEncoding('utf8');
                     let rawData = '';
-                    res.on('data', (chunk) => { rawData += chunk; });
+                    res.on('data', (chunk) => {
+                        rawData += chunk;
+                    });
                     res.on('end', () => {
                         resolve(rawData.toString());
                     });
@@ -169,14 +171,12 @@ async function prepareTranspilerOptions(options) {
 
         if ("url" in options) {
             innerOptions.url = options.url;
-        }
-        else {
+        } else {
             innerOptions.url = sourcePrefix + crypto.createHash('md5').update(options.source).digest("hex");
         }
 
         innerOptions.readFromUrl = false;
-    }
-    else if ("url" in options) {
+    } else if ("url" in options) {
         assert(typeof (options.url) == "string", "The url option is not a string.");
         innerOptions.url = options.url;
         innerOptions.readFromUrl = true;
@@ -186,8 +186,7 @@ async function prepareTranspilerOptions(options) {
             const fileExtension = fs_path.extname(innerOptions.url);
             if (fileExtension.length > 1) {
                 innerOptions.inputLang = fileExtension.substr(1);
-            }
-            else {
+            } else {
                 if (innerOptions.debug) {
                     console.warn("Cannot retrieve the inputLang option from the url.");
                 }
@@ -195,8 +194,7 @@ async function prepareTranspilerOptions(options) {
                 throw new Error("Cannot retrieve the inputLang option from the url.");
             }
         }
-    }
-    else {
+    } else {
         throw new Error("The options object must contains at least the source or url fields.");
     }
 
@@ -204,7 +202,7 @@ async function prepareTranspilerOptions(options) {
     if (innerOptions.allowCache) {
         innerOptions.cacheId = innerOptions.inputLang + "-" + innerOptions.outputLang + "/" + innerOptions.url;
 
-        if (transpilersCache.has(innerOptions.url)) {
+        if (transpilersCache.has(innerOptions.cacheId)) {
             if (innerOptions.debug) {
                 console.debug("(Preos) Returning from cache: " + innerOptions.url);
             }
@@ -258,9 +256,9 @@ async function transpile(options) {
         assert(typeof (output) == "object", "Transpilers must return an object as result.");
         assert(output.source && typeof (output.source) == "string", "Transpilers must return an object with at least the source property with the string representation of the traspiled code.");
 
-        if (options.allowCache) {
+        if (options.allowCache && !transpilersCache.has(options.cacheId)) {
             if (options.debug) {
-                console.debug("(Preos) Caching: " + options.url + " as " + innerOptions.cacheId);
+                console.debug("(Preos) Caching: " + options.url + " as " + options.cacheId);
             }
 
             transpilersCache.set(options.cacheId, output);
@@ -375,14 +373,12 @@ async function prepareInterpreterOptions(options) {
 
         if ("url" in options) {
             innerOptions.url = options.url;
-        }
-        else {
+        } else {
             innerOptions.url = sourcePrefix + crypto.createHash('md5').update(options.source).digest("hex");
         }
 
         innerOptions.readFromUrl = false;
-    }
-    else if ("url" in options) {
+    } else if ("url" in options) {
         assert(typeof (options.url) == "string", "The url option is not a string.");
         innerOptions.url = options.url;
         innerOptions.readFromUrl = true;
@@ -392,8 +388,7 @@ async function prepareInterpreterOptions(options) {
             const fileExtension = fs_path.extname(innerOptions.url);
             if (fileExtension.length > 1) {
                 innerOptions.lang = fileExtension.substr(1);
-            }
-            else {
+            } else {
                 if (innerOptions.debug) {
                     console.warn("Cannot retrieve the lang option from the url.");
                 }
@@ -401,8 +396,7 @@ async function prepareInterpreterOptions(options) {
                 throw new Error("Cannot retrieve the lang option from the url.");
             }
         }
-    }
-    else {
+    } else {
         throw new Error("The options object must contains at least the source or url fields.");
     }
 
@@ -410,7 +404,7 @@ async function prepareInterpreterOptions(options) {
     if (innerOptions.allowCache) {
         innerOptions.cacheId = innerOptions.lang + "/" + innerOptions.url;
 
-        if (interpretersCache.has(innerOptions.url)) {
+        if (interpretersCache.has(innerOptions.cacheId)) {
             if (innerOptions.debug) {
                 console.debug("(Preos) Returning from cache: " + innerOptions.url);
             }
@@ -460,12 +454,12 @@ async function interprete(options) {
             output = await output;
         }
 
-        if (options.allowCache) {
+        if (options.allowCache && !transpilersCache.has(options.cacheId)) {
             if (options.debug) {
-                console.debug("(Preos) Caching: " + options.url + " as " + innerOptions.cacheId);
+                console.debug("(Preos) Caching: " + options.url + " as " + options.cacheId);
             }
 
-            transpilersCache.set(options.cacheId, output);
+            interpretersCache.set(options.cacheId, output);
         }
 
         return {

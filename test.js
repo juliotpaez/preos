@@ -2,7 +2,7 @@ const preos = require("./main.js");
 const fs = require('fs');
 const fs_path = require('path');
 
-(async function () {
+var test = async function (prefix) {
     const src_dir = "src/";
     const output_dir = "output/"
 
@@ -31,7 +31,7 @@ const fs_path = require('path');
 
             try {
                 result = await preos.transpile({
-                    debug: false,
+                    debug: true,
                     url: file,
                     outputLang,
                     executerOptions: {
@@ -45,15 +45,24 @@ const fs_path = require('path');
                     }
                 });
 
-                console.log(outputLang + "/" + fs_path.basename(file) + " ... OK");
+                console.log(prefix + " " + outputLang + "/" + fs_path.basename(file) + " ... OK");
 
-                fs.writeFileSync(file.replace(src_dir, output_dir)+"." + outputLang, result.source);
-            }
-            catch (why) {
-                console.log(outputLang + "/" + fs_path.basename(file) + " failed because: " + why.stack);
+                fs.writeFileSync(file.replace(src_dir, output_dir) + "." + outputLang, result.source);
+            } catch (why) {
+                console.log(prefix + " " + outputLang + "/" + fs_path.basename(file) + " failed because: " + why.stack);
             }
         }
     }
 
     var result;
-})();
+}
+
+var mainTest = async function () {
+    // First test.
+    await test("[Test 1]");
+
+    // Second test: It's used to test the cache.
+    await test("[Test 2]");
+}
+
+mainTest();
