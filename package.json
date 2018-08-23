@@ -1,6 +1,6 @@
 {
 	"name": "preos",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "Preos is a js library to transpile and interprete other languages than HTML, CSS and JS in runtime.",
 	"main": "main.js",
 	"scripts": {

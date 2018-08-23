@@ -70,7 +70,7 @@ async function loadFrom(url) {
         return {
             protocol: "http",
             content: await loadFromHttp(url)
-        }
+        };
     } else {
         return {
             protocol: "file",
@@ -182,12 +182,12 @@ async function prepareTranspilerOptions(options) {
         innerOptions.readFromUrl = true;
 
         // Gets the lang from the path if it is required.
-        if (innerOptions.inputLang == null) {
+        if (innerOptions.inputLang === null) {
             const fileExtension = fs_path.extname(innerOptions.url);
             if (fileExtension.length > 1) {
                 innerOptions.inputLang = fileExtension.substr(1);
             } else {
-                if (innerOptions.debug) {
+                if (innerOptions.debug === true) {
                     console.warn("Cannot retrieve the inputLang option from the url.");
                 }
 
@@ -199,17 +199,17 @@ async function prepareTranspilerOptions(options) {
     }
 
     // Loads the file from cache if there is inside.
-    if (innerOptions.allowCache) {
+    if (innerOptions.allowCache === true) {
         innerOptions.cacheId = innerOptions.inputLang + "-" + innerOptions.outputLang + "/" + innerOptions.url;
 
         if (transpilersCache.has(innerOptions.cacheId)) {
-            if (innerOptions.debug) {
+            if (innerOptions.debug === true) {
                 console.debug("(Preos) Returning from cache: " + innerOptions.url);
             }
 
             innerOptions.cached = transpilersCache.get(innerOptions.cacheId);
 
-            if (innerOptions.debug) {
+            if (innerOptions.debug === true) {
                 console.debug("(Preos) Options: " + JSON.stringify(innerOptions));
             }
 
@@ -219,7 +219,7 @@ async function prepareTranspilerOptions(options) {
 
     // Loads file if there's no local source.
     if (!innerOptions.url.startsWith(sourcePrefix)) {
-        if (innerOptions.debug) {
+        if (innerOptions.debug === true) {
             console.debug("(Preos) Loading file: " + innerOptions.url);
         }
 
@@ -227,7 +227,7 @@ async function prepareTranspilerOptions(options) {
         innerOptions.source = data.content;
     }
 
-    if (innerOptions.debug) {
+    if (innerOptions.debug === true) {
         console.debug("(Preos) Options: " + JSON.stringify(innerOptions));
     }
 
@@ -238,7 +238,7 @@ async function transpile(options) {
     options = await prepareTranspilerOptions(options);
 
     // If cached return its value.
-    if (options.cached) {
+    if (options.cached !== undefined) {
         return {
             source: options.cached.source,
             options,
@@ -254,10 +254,10 @@ async function transpile(options) {
         }
 
         assert(typeof (output) == "object", "Transpilers must return an object as result.");
-        assert(output.source && typeof (output.source) == "string", "Transpilers must return an object with at least the source property with the string representation of the traspiled code.");
+        assert(typeof (output.source) == "string", "Transpilers must return an object with at least the source property with the string representation of the traspiled code.");
 
-        if (options.allowCache && !transpilersCache.has(options.cacheId)) {
-            if (options.debug) {
+        if (options.allowCache === true && !transpilersCache.has(options.cacheId)) {
+            if (options.debug === true) {
                 console.debug("(Preos) Caching: " + options.url + " as " + options.cacheId);
             }
 
@@ -271,7 +271,7 @@ async function transpile(options) {
         };
     }
 
-    if (options.debug) {
+    if (options.debug === true) {
         console.warn("The lang pair (" + options.inputLang + "-" + options.outputLang + ") does not match any valid transpiler.");
     }
 
@@ -285,7 +285,7 @@ function registerTranspiler(inputLang, outputLang, compiler) {
     assert(regexLang.test(outputLang), "The outputLang parameter can only contains letters, numbers and underscores (_).");
     assert(typeof (compiler) == "function", "The compiler parameter is not a function.");
 
-    if (!(transpilers[outputLang])) {
+    if (typeof(transpilers[outputLang]) == "undefined") {
         transpilers[outputLang] = {};
     }
 
@@ -299,7 +299,7 @@ function deleteTranspiler(inputLang, outputLang) {
     assert(typeof (outputLang) == "string", "The outputLang parameter is not a string.");
     assert(regexLang.test(outputLang), "The outputLang parameter can only contains letters, numbers and underscores (_).");
 
-    if (!(transpilers[outputLang]) || !(transpilers[outputLang][inputLang])) {
+    if (typeof(transpilers[outputLang]) == "undefined" || typeof(transpilers[outputLang][inputLang]) == "undefined") {
         return;
     }
 
@@ -318,7 +318,7 @@ function getTranspiler(inputLang, outputLang) {
     assert(typeof (outputLang) == "string", "The outputLang parameter is not a string.");
     assert(regexLang.test(outputLang), "The outputLang parameter can only contains letters, numbers and underscores (_).");
 
-    if (transpilers[outputLang] && transpilers[outputLang][inputLang]) {
+    if (typeof(transpilers[outputLang]) != "undefined" && typeof(transpilers[outputLang][inputLang]) != "undefined") {
         return transpilers[outputLang][inputLang];
     }
 
@@ -384,12 +384,12 @@ async function prepareInterpreterOptions(options) {
         innerOptions.readFromUrl = true;
 
         // Gets the lang from the path if it is required.
-        if (innerOptions.lang == null) {
+        if (innerOptions.lang === null) {
             const fileExtension = fs_path.extname(innerOptions.url);
             if (fileExtension.length > 1) {
                 innerOptions.lang = fileExtension.substr(1);
             } else {
-                if (innerOptions.debug) {
+                if (innerOptions.debug === true) {
                     console.warn("Cannot retrieve the lang option from the url.");
                 }
 
@@ -401,17 +401,17 @@ async function prepareInterpreterOptions(options) {
     }
 
     // Loads the file from cache if there is inside.
-    if (innerOptions.allowCache) {
+    if (innerOptions.allowCache === true) {
         innerOptions.cacheId = innerOptions.lang + "/" + innerOptions.url;
 
         if (interpretersCache.has(innerOptions.cacheId)) {
-            if (innerOptions.debug) {
+            if (innerOptions.debug === true) {
                 console.debug("(Preos) Returning from cache: " + innerOptions.url);
             }
 
             innerOptions.cached = interpretersCache.get(innerOptions.cacheId);
 
-            if (innerOptions.debug) {
+            if (innerOptions.debug === true) {
                 console.debug("(Preos) Options: " + JSON.stringify(innerOptions));
             }
 
@@ -421,7 +421,7 @@ async function prepareInterpreterOptions(options) {
 
     // Loads file if there's no local source.
     if (!innerOptions.url.startsWith(sourcePrefix)) {
-        if (innerOptions.debug) {
+        if (innerOptions.debug === true) {
             console.debug("(Preos) Loading file: " + innerOptions.url);
         }
 
@@ -429,7 +429,7 @@ async function prepareInterpreterOptions(options) {
         innerOptions.source = data.content;
     }
 
-    if (innerOptions.debug) {
+    if (innerOptions.debug === true) {
         console.debug("(Preos) Options: " + JSON.stringify(innerOptions));
     }
 
@@ -440,7 +440,7 @@ async function interprete(options) {
     options = await prepareInterpreterOptions(options);
 
     // If cached return its value.
-    if (options.cached) {
+    if (options.cached !== undefined) {
         return {
             output: options.cached,
             options,
@@ -454,7 +454,7 @@ async function interprete(options) {
             output = await output;
         }
 
-        if (options.allowCache && !transpilersCache.has(options.cacheId)) {
+        if (options.allowCache === true) {
             if (options.debug) {
                 console.debug("(Preos) Caching: " + options.url + " as " + options.cacheId);
             }

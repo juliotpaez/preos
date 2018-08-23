@@ -203,7 +203,7 @@ async function execute(options, dom) {
 		return exportsObject;
 	}
 
-	if (options.executerOptions.style && options.executerOptions.style.delegateStyles === true) {
+	if (options.executerOptions.style !== undefined && options.executerOptions.style.delegateStyles === true) {
 		exportsObject.insertStyles = insertStyles;
 	}
 	else {
